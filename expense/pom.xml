@@ -8,11 +8,11 @@
 		<version>3.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>dat.expense</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>dat.hcmus</groupId>
+	<artifactId>expense</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>expense</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Expense tracker project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
