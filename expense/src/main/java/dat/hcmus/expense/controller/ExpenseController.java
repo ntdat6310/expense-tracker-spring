@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dat.hcmus.expense.entity.Expense;
 import dat.hcmus.expense.service.ExpenseService;
+import jakarta.validation.Valid;
 
 @RestController
 public class ExpenseController {
@@ -40,12 +41,12 @@ public class ExpenseController {
 
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@PostMapping("/expense")
-	public Expense addExpense(@RequestBody Expense expense) {
+	public Expense addExpense(@Valid @RequestBody Expense expense) {
 		return expenseService.add(expense);
 	}
 
 	@PutMapping("/expense")
-	public Expense updateExpense(@RequestBody Expense expense) {
+	public Expense updateExpense(@Valid @RequestBody Expense expense) {
 		return expenseService.update(expense);
 	}
 }
