@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dat.hcmus.expense.entity.Expense;
@@ -15,8 +17,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 	private ExpenseRepository expenseRepo;
 
 	@Override
-	public List<Expense> getAll() {
-		return expenseRepo.findAll();
+	public Page<Expense> getAll(Pageable page) {
+		return expenseRepo.findAll(page);
 	}
 
 	@Override
