@@ -30,12 +30,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	public ResponseEntity<ErrorObject> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
-			WebRequest request) {
-		ErrorObject errObj = new ErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
-		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.BAD_REQUEST);
-	}
+//	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+//	public ResponseEntity<ErrorObject> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
+//			WebRequest request) {
+//		ErrorObject errObj = new ErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+//		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.BAD_REQUEST);
+//	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorObject> handleGeneralException(Exception ex, WebRequest request) {

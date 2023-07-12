@@ -1,6 +1,6 @@
 package dat.hcmus.expense.service;
 
-import java.util.List;
+import java.sql.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +17,10 @@ public interface ExpenseService {
 	public Expense add(Expense expense);
 
 	public Expense update(Expense expense);
+
+	public Page<Expense> getByCategory(String category, Pageable page);
+
+	public Page<Expense> getByNameKeyword(String keyword, Pageable page);
+	
+	public Page<Expense> getByDateBetween(Date startDate, Date endDate, Pageable page);
 }

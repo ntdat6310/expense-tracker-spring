@@ -1,5 +1,6 @@
 package dat.hcmus.expense.service;
 
+import java.sql.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +47,35 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public Expense update(Expense expense) {
-		Expense existingExpense = getById(expense.getId());
-		existingExpense.setName(expense.getName() != null ? expense.getName() : existingExpense.getName());
-		existingExpense.setDescription(
-				expense.getDescription() != null ? expense.getDescription() : existingExpense.getDescription());
-		existingExpense.setDate(expense.getDate() != null ? expense.getDate() : existingExpense.getDate());
-		existingExpense
-				.setCategory(expense.getCategory() != null ? expense.getCategory() : existingExpense.getCategory());
-		existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
-		return expenseRepo.save(existingExpense);
+//		Expense existingExpense = getById(expense.getId());
+//		existingExpense.setName(expense.getName() != null ? expense.getName() : existingExpense.getName());
+//		existingExpense.setDescription(
+//				expense.getDescription() != null ? expense.getDescription() : existingExpense.getDescription());
+//		existingExpense.setDate(expense.getDate() != null ? expense.getDate() : existingExpense.getDate());
+//		existingExpense
+//				.setCategory(expense.getCategory() != null ? expense.getCategory() : existingExpense.getCategory());
+//		existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
+//		return expenseRepo.save(existingExpense);
+
+		Optional<Expense> result = expenseRepo.findById(expense.getId());
+		if (result.isEmpty()) {
+			throw new ResourceNotFoundException("Expense is not found for the id - " + expense.getId());
+		}
+		return expenseRepo.save(expense);
+	}
+
+	@Override
+	public Page<Expense> getByCategory(String category, Pageable page) {
+		return expenseRepo.findByCategory(category, page);
+	}
+
+	@Override
+	public Page<Expense> getByNameKeyword(String keyword, Pageable page) {
+		return expenseRepo.findByNameContaining(keyword, page);
+	}
+
+	@Override
+	public Page<Expense> getByDateBetween(Date startDate, Date endDate, Pageable page) {
+		return expenseRepo.findByDateBetween(startDate, endDate, page);
 	}
 }
