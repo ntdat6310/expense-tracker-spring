@@ -12,6 +12,7 @@ import dat.hcmus.expense.entity.Expense;
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 	// Filter by category
+	// SELECT * FROM tbl_expenses WHERE category=?
 	Page<Expense> findByCategory(String category, Pageable page);
 
 	// Filter by name keyword

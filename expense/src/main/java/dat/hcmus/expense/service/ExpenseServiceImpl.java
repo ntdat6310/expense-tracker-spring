@@ -33,11 +33,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public void deleteById(Long id) {
-		Optional<Expense> result = expenseRepo.findById(id);
-		if (result.isEmpty()) {
-			throw new ResourceNotFoundException("Expense is not found for the id - " + id);
-		}
-		expenseRepo.deleteById(id);
+		Expense expense = getById(id);
+		expenseRepo.delete(expense);
 	}
 
 	@Override
@@ -57,10 +54,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 //		existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
 //		return expenseRepo.save(existingExpense);
 
-		Optional<Expense> result = expenseRepo.findById(expense.getId());
-		if (result.isEmpty()) {
-			throw new ResourceNotFoundException("Expense is not found for the id - " + expense.getId());
-		}
+		getById(expense.getId());
 		return expenseRepo.save(expense);
 	}
 

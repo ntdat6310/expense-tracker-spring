@@ -23,19 +23,18 @@ import dat.hcmus.expense.entity.ErrorObject;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ErrorObject> handleExpenseNotFoundException(ResourceNotFoundException ex,
+	public ResponseEntity<ErrorObject> handleResourceNotFoundException(ResourceNotFoundException ex,
 			WebRequest request) {
-
 		ErrorObject errObj = new ErrorObject(ex.getMessage(), HttpStatus.NOT_FOUND.value());
 		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.NOT_FOUND);
 	}
 
-//	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-//	public ResponseEntity<ErrorObject> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
-//			WebRequest request) {
-//		ErrorObject errObj = new ErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
-//		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.BAD_REQUEST);
-//	}
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ErrorObject> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex,
+			WebRequest request) {
+		ErrorObject errObj = new ErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.BAD_REQUEST);
+	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorObject> handleGeneralException(Exception ex, WebRequest request) {
@@ -58,5 +57,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		body.put("message", errors);
 
 		return new ResponseEntity<Object>(body, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ItemAlreadyExistsException.class)
+	public ResponseEntity<ErrorObject> handleItemAlreadyExistsException(Exception ex, WebRequest request) {
+		ErrorObject errObj = new ErrorObject(ex.getMessage(), HttpStatus.CONFLICT.value());
+		return new ResponseEntity<ErrorObject>(errObj, HttpStatus.CONFLICT);
 	}
 }
