@@ -153,6 +153,14 @@ public class User implements UserDetails {
 		return roles;
 	}
 
+	public String getRolesString() {
+		List<String> rolesStr = new ArrayList<String>();
+		for (Role role : roles) {
+			rolesStr.add(role.getName());
+		}
+		return rolesStr.toString();
+	}
+
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
@@ -171,8 +179,7 @@ public class User implements UserDetails {
 	public void setExpenses(List<Expense> expenses) {
 		this.expenses = expenses;
 	}
-	
-	
+
 	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

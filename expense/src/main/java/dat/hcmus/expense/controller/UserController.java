@@ -15,17 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dat.hcmus.expense.entity.User;
 import dat.hcmus.expense.entity.UserModel;
+import dat.hcmus.expense.security.JwtUtil;
 import dat.hcmus.expense.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
 	private UserService userService;
+	private JwtUtil jwtUtil;
 
 	@Autowired
-	public UserController(UserService userService) {
+	public UserController(UserService userService, JwtUtil jwtUtil) {
 		super();
 		this.userService = userService;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@PostMapping("/register")
@@ -38,14 +41,14 @@ public class UserController {
 		return new ResponseEntity<User>(userService.getLoggedInUser(), HttpStatus.OK);
 	}
 
+	@PutMapping("/profile")
+	public User updateUser(@RequestBody @Valid UserModel user) {
+		return userService.update(user);
+	}
+
 	@GetMapping("/users")
 	public List<User> getUser(Pageable page) {
 		return userService.getUsers(page).toList();
-	}
-
-	@PutMapping("/user")
-	public User updateUser(@RequestBody @Valid UserModel user) {
-		return userService.update(user);
 	}
 
 	@DeleteMapping("/user")

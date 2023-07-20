@@ -59,14 +59,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User update(UserModel user) {
-		User existingUser = userRepo.findByEmail(user.getEmail());
-		if (existingUser == null) {
-			throw new ResourceNotFoundException("User not found by email : " + user.getEmail());
+		if (user.getEmail() != null && user.getEmail().compareTo(getLoggedInUser().getEmail()) != 0) {
+			throw new ItemAlreadyExistsException("You can not change the email: " + user.getEmail());
 		}
+		User existingUser = getLoggedInUser();
 		existingUser.setName(user.getName() != null ? user.getName() : existingUser.getName());
-		existingUser.setEmail(user.getEmail() != null ? user.getEmail() : existingUser.getEmail());
 		existingUser.setAge(user.getAge() != null ? user.getAge() : existingUser.getAge());
-
 		return userRepo.save(existingUser);
 	}
 
@@ -82,7 +80,7 @@ public class UserServiceImpl implements UserService {
 		String email = authentication.getName();
 		User user = userRepo.findByEmail(email);
 		if (user == null) {
-			throw new UsernameNotFoundException("User not found for the email" + email);
+			throw new UsernameNotFoundException("User not found for the email: " + email);
 		}
 		return user;
 	}

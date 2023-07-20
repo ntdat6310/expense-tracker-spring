@@ -43,9 +43,13 @@ public class AppSecurityConfig {
 	@SuppressWarnings({ "removal", "deprecation" })
 	@Bean
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().requestMatchers("/login", "/register").permitAll().anyRequest()
-				.authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+		http.csrf().disable();
+		http.authorizeRequests().requestMatchers("/login", "/register").permitAll();
+		http.authorizeRequests().requestMatchers("/profile", "/expenses", "/expense/**").hasAnyRole("USER", "ADMIN");
+		http.authorizeRequests().requestMatchers("/users/**", "/user/**").hasAnyRole("ADMIN");
+		http.authorizeRequests().anyRequest().authenticated();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 		// Here we have added our jwt filter before the
 		// UsernamePasswordAuthenticationFilter.
 		// Because we want every request to be authenticated before going through spring

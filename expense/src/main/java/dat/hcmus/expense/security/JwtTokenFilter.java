@@ -55,8 +55,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		roles = roles.replace("[", "").replace("]", "");
 		String[] roleNames = roles.split(",");
 
-		for (String aRoleName : roleNames) {
-			userDetails.addRole(new Role(aRoleName));
+		for (String roleName : roleNames) {
+			userDetails.addRole(new Role(roleName));
 		}
 
 		String[] jwtSubject = subject.split(",");
