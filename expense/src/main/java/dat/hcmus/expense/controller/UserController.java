@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,14 +28,14 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@PostMapping("/user/register")
+	@PostMapping("/register")
 	public ResponseEntity<User> createUser(@RequestBody @Valid UserModel uModel) {
 		return new ResponseEntity<User>(userService.createUser(uModel), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/user/{id}")
-	public ResponseEntity<User> getUser(@PathVariable Long id) {
-		return new ResponseEntity<User>(userService.getUser(id), HttpStatus.OK);
+	@GetMapping("/profile")
+	public ResponseEntity<User> getUser() {
+		return new ResponseEntity<User>(userService.getLoggedInUser(), HttpStatus.OK);
 	}
 
 	@GetMapping("/users")
@@ -49,9 +48,9 @@ public class UserController {
 		return userService.update(user);
 	}
 
-	@DeleteMapping("/user/{id}")
-	public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
-		userService.deleteUser(id);
+	@DeleteMapping("/user")
+	public ResponseEntity<HttpStatus> deleteUser() {
+		userService.deleteUser(userService.getLoggedInUser().getId());
 		return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
 	}
 

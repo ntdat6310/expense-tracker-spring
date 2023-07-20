@@ -2,13 +2,17 @@ package dat.hcmus.expense.service;
 
 import java.util.Optional;
 
-import org.hibernate.ResourceClosedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dat.hcmus.expense.entity.Role;
 import dat.hcmus.expense.entity.User;
 import dat.hcmus.expense.entity.UserModel;
 import dat.hcmus.expense.exception.ItemAlreadyExistsException;
@@ -18,11 +22,13 @@ import dat.hcmus.expense.repository.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
+	private BCryptPasswordEncoder bcrypt;
 
 	@Autowired
-	public UserServiceImpl(UserRepository userRepo) {
+	public UserServiceImpl(UserRepository userRepo, BCryptPasswordEncoder bcrypt) {
 		super();
 		this.userRepo = userRepo;
+		this.bcrypt = bcrypt;
 	}
 
 	@Override
@@ -32,6 +38,8 @@ public class UserServiceImpl implements UserService {
 		}
 		User user = new User();
 		BeanUtils.copyProperties(uModel, user);
+		user.addRole(new Role("USER"));
+		user.setPassword(bcrypt.encode((user.getPassword())));
 		return userRepo.save(user);
 	}
 
@@ -57,7 +65,6 @@ public class UserServiceImpl implements UserService {
 		}
 		existingUser.setName(user.getName() != null ? user.getName() : existingUser.getName());
 		existingUser.setEmail(user.getEmail() != null ? user.getEmail() : existingUser.getEmail());
-		existingUser.setPassword(user.getPassword() != null ? user.getPassword() : existingUser.getPassword());
 		existingUser.setAge(user.getAge() != null ? user.getAge() : existingUser.getAge());
 
 		return userRepo.save(existingUser);
@@ -67,5 +74,16 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(Long id) {
 		User user = getUser(id);
 		userRepo.delete(user);
+	}
+
+	@Override
+	public User getLoggedInUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		User user = userRepo.findByEmail(email);
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found for the email" + email);
+		}
+		return user;
 	}
 }

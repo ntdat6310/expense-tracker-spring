@@ -11,15 +11,14 @@ import dat.hcmus.expense.entity.Expense;
 
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-	// Filter by category
-	// SELECT * FROM tbl_expenses WHERE category=?
-	Page<Expense> findByCategory(String category, Pageable page);
+//	@Query("SELECT e FROM Expense e WHERE e.author.id=:userId AND e.category=:category")
+	Page<Expense> findByAuthorIdAndCategory(Long authorId, String category, Pageable page);
 
-	// Filter by name keyword
-	// SELECT * FROM tbl_expenses WHERE name LIKE '%keyword%'
-	Page<Expense> findByNameContaining(String keyword, Pageable page);
+	Page<Expense> findByAuthorIdAndNameContaining(Long authorId, String keyword, Pageable page);
 
-	// Filter by date
-	// SELECT * FROM tbl_expenses WHERE date BETWEEN 'startDate' AND 'endDate'
-	Page<Expense> findByDateBetween(Date startDate, Date endDate, Pageable page);
+	Page<Expense> findByAuthorIdAndDateBetween(Long authorId, Date startDate, Date endDate, Pageable page);
+
+	Page<Expense> findByAuthorId(Long authorId, Pageable page);
+
+	Expense findByAuthorIdAndId(Long expenseId, Long authorId);
 }

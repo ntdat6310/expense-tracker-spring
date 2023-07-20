@@ -1,7 +1,6 @@
 package dat.hcmus.expense.service;
 
 import java.sql.Date;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,19 +15,21 @@ import dat.hcmus.expense.repository.ExpenseRepository;
 public class ExpenseServiceImpl implements ExpenseService {
 	@Autowired
 	private ExpenseRepository expenseRepo;
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public Page<Expense> getAll(Pageable page) {
-		return expenseRepo.findAll(page);
+		return expenseRepo.findByAuthorId(userService.getLoggedInUser().getId(), page);
 	}
 
 	@Override
 	public Expense getById(Long id) {
-		Optional<Expense> result = expenseRepo.findById(id);
-		if (result.isPresent()) {
-			return result.get();
+		Expense result = expenseRepo.findByAuthorIdAndId(userService.getLoggedInUser().getId(), id);
+		if (result == null) {
+			throw new ResourceNotFoundException("Expense is not found for the id - " + id);
 		}
-		throw new ResourceNotFoundException("Expense is not found for the id - " + id);
+		return result;
 	}
 
 	@Override
@@ -39,37 +40,36 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public Expense add(Expense expense) {
+		expense.setAuthor(userService.getLoggedInUser());
 		return expenseRepo.save(expense);
 	}
 
 	@Override
 	public Expense update(Expense expense) {
-//		Expense existingExpense = getById(expense.getId());
-//		existingExpense.setName(expense.getName() != null ? expense.getName() : existingExpense.getName());
-//		existingExpense.setDescription(
-//				expense.getDescription() != null ? expense.getDescription() : existingExpense.getDescription());
-//		existingExpense.setDate(expense.getDate() != null ? expense.getDate() : existingExpense.getDate());
-//		existingExpense
-//				.setCategory(expense.getCategory() != null ? expense.getCategory() : existingExpense.getCategory());
-//		existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
-//		return expenseRepo.save(existingExpense);
-
-		getById(expense.getId());
-		return expenseRepo.save(expense);
+		Expense existingExpense = getById(expense.getId());
+		existingExpense.setName(expense.getName() != null ? expense.getName() : existingExpense.getName());
+		existingExpense.setDescription(
+				expense.getDescription() != null ? expense.getDescription() : existingExpense.getDescription());
+		existingExpense.setDate(expense.getDate() != null ? expense.getDate() : existingExpense.getDate());
+		existingExpense
+				.setCategory(expense.getCategory() != null ? expense.getCategory() : existingExpense.getCategory());
+		existingExpense.setAmount(expense.getAmount() != null ? expense.getAmount() : existingExpense.getAmount());
+		return expenseRepo.save(existingExpense);
 	}
 
 	@Override
 	public Page<Expense> getByCategory(String category, Pageable page) {
-		return expenseRepo.findByCategory(category, page);
+		return expenseRepo.findByAuthorIdAndCategory(userService.getLoggedInUser().getId(), category, page);
 	}
 
 	@Override
 	public Page<Expense> getByNameKeyword(String keyword, Pageable page) {
-		return expenseRepo.findByNameContaining(keyword, page);
+		return expenseRepo.findByAuthorIdAndNameContaining(userService.getLoggedInUser().getId(), keyword, page);
 	}
 
 	@Override
 	public Page<Expense> getByDateBetween(Date startDate, Date endDate, Pageable page) {
-		return expenseRepo.findByDateBetween(startDate, endDate, page);
+		return expenseRepo.findByAuthorIdAndDateBetween(userService.getLoggedInUser().getId(), startDate, endDate,
+				page);
 	}
 }

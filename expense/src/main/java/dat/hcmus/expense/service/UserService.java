@@ -16,4 +16,6 @@ public interface UserService {
 	User update(UserModel user);
 
 	void deleteUser(Long id);
+	
+	User getLoggedInUser();
 }
