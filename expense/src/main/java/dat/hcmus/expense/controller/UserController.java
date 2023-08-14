@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,20 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dat.hcmus.expense.entity.User;
 import dat.hcmus.expense.entity.UserModel;
-import dat.hcmus.expense.security.JwtUtil;
 import dat.hcmus.expense.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
 	private UserService userService;
-	private JwtUtil jwtUtil;
 
 	@Autowired
-	public UserController(UserService userService, JwtUtil jwtUtil) {
+	public UserController(UserService userService) {
 		super();
 		this.userService = userService;
-		this.jwtUtil = jwtUtil;
 	}
 
 	@PostMapping("/register")
@@ -51,9 +49,9 @@ public class UserController {
 		return userService.getUsers(page).toList();
 	}
 
-	@DeleteMapping("/user")
-	public ResponseEntity<HttpStatus> deleteUser() {
-		userService.deleteUser(userService.getLoggedInUser().getId());
+	@DeleteMapping("/user/{id}")
+	public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
+		userService.deleteUser(id);
 		return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
 	}
 

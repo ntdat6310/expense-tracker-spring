@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 		}
 		User user = new User();
 		BeanUtils.copyProperties(uModel, user);
-		user.addRole(new Role("USER"));
+		user.addRole(new Role("ROLE_USER"));
 		user.setPassword(bcrypt.encode((user.getPassword())));
 		return userRepo.save(user);
 	}
